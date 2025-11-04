@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+  mvc_backend:
+    image: ${DOCKER_REGISTRY-}mvc_backend
+    build:
+      context: .
+      dockerfile: PrasTestProject/Dockerfile
+
+volumes:
+   postgres:
+   pgadmin:

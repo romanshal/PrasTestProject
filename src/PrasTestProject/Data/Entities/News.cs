@@ -1,16 +1,10 @@
 ﻿namespace PrasTestProject.Data.Entities
 {
-    public sealed class News
+    public sealed class News : BaseEntity
     {
-        public Guid Id { get; set; }
-        public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAtUtc { get; set; }
-        public string TitleRu { get; set; } = null!;
-        public string TitleEn { get; set; } = null!;
-        public string SubtitleRu { get; set; } = null!;
-        public string SubtitleEn { get; set; } = null!;
-        public string BodyRu { get; set; } = null!;
-        public string BodyEn { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Subtitle { get; set; } = null!;
+        public string Body { get; set; } = null!;
 
         // Относительный путь к файлу в wwwroot
         public string? ImagePath { get; set; }

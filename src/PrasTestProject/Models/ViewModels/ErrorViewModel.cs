@@ -1,4 +1,4 @@
-namespace PrasTestProject.Models
+namespace PrasTestProject.Models.ViewModels
 {
     public class ErrorViewModel
     {

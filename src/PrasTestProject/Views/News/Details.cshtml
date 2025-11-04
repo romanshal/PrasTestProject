@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PrasTestProject.Models.ViewModels.NewsDetailsViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="container mt-4">
+    <article class="news-details">
+        <img asp-append-version="true" src="@Model.ImagePath" alt="@Model.Title" class="img-fluid mb-3 rounded" />
+
+        <h1 class="mb-2">@Model.Title</h1>
+        <h4 class="text-muted mb-4">@Model.Subtitle</h4>
+
+        <div class="mb-4">
+            <p>@Model.Text</p>
+        </div>
+
+        <p class="text-muted small">@Model.CreatedAtUtc.ToString("D")</p>
+
+        <a asp-controller="News" asp-action="Index" class="btn btn-outline-primary">
+            @Localizer["Back"]
+        </a>
+    </article>
+</section>

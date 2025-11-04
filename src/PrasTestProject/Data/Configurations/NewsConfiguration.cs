@@ -14,14 +14,12 @@ namespace PrasTestProject.Data.Configurations
 
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.TitleRu).HasMaxLength(200).IsRequired();
-            builder.Property(x => x.TitleEn).HasMaxLength(200).IsRequired();
-            builder.Property(x => x.SubtitleRu).HasMaxLength(300).IsRequired();
-            builder.Property(x => x.SubtitleEn).HasMaxLength(300).IsRequired();
-            builder.Property(x => x.BodyRu).IsRequired();
-            builder.Property(x => x.BodyEn).IsRequired();
+            builder.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.Subtitle).HasMaxLength(300).IsRequired();
+            builder.Property(x => x.Body).IsRequired();
+
             builder.HasIndex(x => new { x.IsPublished, x.CreatedAtUtc });
         }
     }
 }
-}
+

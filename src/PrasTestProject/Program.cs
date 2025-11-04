@@ -2,19 +2,37 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PrasTestProject.Data.Contexts;
-using System;
+using PrasTestProject.Data.Storages;
+using PrasTestProject.Extensions;
+using PrasTestProject.Interfaces.Storages;
+using PrasTestProject.Interfaces.UnitOfWork;
+using PrasTestProject.UnitOfWork;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
-
 var connectionString = builder.Configuration.GetConnectionString("NewsDbConnction") ?? throw new InvalidOperationException("Connectiob string 'NewsDbConnction not found.'");
 builder.Services.AddDbContext<NewsDbContext>(opt =>
-    opt.UseNpgsql());
+    opt.UseNpgsql(connectionString));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+builder.Services.AddMediatR(conf =>
+{
+    conf.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+});
+
+builder.Services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
+
+builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
+builder.Services
+    .AddScoped<ICreateNewsStorage, CreateNewsStorage>()
+    .AddScoped<IImageStorage, LocalImageStorage>()
+    .AddScoped<INewsDetailsStorage, NewsDetailsStorage>()
+    .AddScoped<INewsListStorage, NewsListStorage>();
+
+builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>(opt =>
 {
     opt.SignIn.RequireConfirmedAccount = false;
     opt.Password.RequireDigit = false;
@@ -22,11 +40,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
     opt.Password.RequireNonAlphanumeric = false;
     opt.Password.RequireUppercase = false;
 })
-.AddEntityFrameworkStores<NewsDbContext>()
-.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<NewsDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddControllersWithViews()
+
+builder.Services
+    .AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
@@ -41,6 +61,17 @@ builder.Services.Configure<RequestLocalizationOptions>(opt =>
 
 var app = builder.Build();
 
+app.MigrateDatabase<NewsDbContext>((context, services) =>
+{
+    var logger = services.GetService<ILogger<DataSeedMaker>>();
+    DataSeedMaker
+        .SeedAsync(context, logger!)
+        .Wait();
+});
+
+var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(locOptions.Value);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -52,6 +83,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

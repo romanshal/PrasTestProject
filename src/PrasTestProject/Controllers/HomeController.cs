@@ -1,32 +1,19 @@
-using System.Diagnostics;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PrasTestProject.Models;
+using PrasTestProject.Features.News.Queries.GetList;
 
 namespace PrasTestProject.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IMediator mediator) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IMediator _mediator = mediator;
 
-        public HomeController(ILogger<HomeController> logger)
+        [HttpGet]
+        public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
         {
-            _logger = logger;
-        }
+            var result = await _mediator.Send(new GetListQuery(1, 3), cancellationToken);
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(result.Value.items);
         }
     }
 }
