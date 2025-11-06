@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using PrasTestProject.Constants;
 using PrasTestProject.Models.ViewModels;
 
@@ -8,10 +9,12 @@ namespace PrasTestProject.Controllers
 {
     public class AccountController(
         UserManager<IdentityUser<Guid>> userManager, 
-        SignInManager<IdentityUser<Guid>> signInManager) : Controller
+        SignInManager<IdentityUser<Guid>> signInManager,
+        IStringLocalizer<AccountController> stringLocalizer) : Controller
     {
         private readonly UserManager<IdentityUser<Guid>> _userManager = userManager;
         private readonly SignInManager<IdentityUser<Guid>> _signInManager = signInManager;
+        private readonly IStringLocalizer<AccountController> _stringLocalizer = stringLocalizer;
 
         [HttpGet]
         public IActionResult Login(string returnUrl = "/") => View(new LoginViewModel { ReturnUrl = returnUrl });
@@ -30,7 +33,7 @@ namespace PrasTestProject.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError("", "Invalid login attempt");
+            ModelState.AddModelError("", _stringLocalizer["Invalid"]);
 
             return View(model);
         }
