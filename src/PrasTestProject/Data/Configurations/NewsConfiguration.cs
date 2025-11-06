@@ -18,7 +18,7 @@ namespace PrasTestProject.Data.Configurations
             builder.Property(x => x.Subtitle).HasMaxLength(300).IsRequired();
             builder.Property(x => x.Body).IsRequired();
 
-            builder.HasIndex(x => new { x.IsPublished, x.CreatedAtUtc });
+            builder.HasIndex(x => x.CreatedAtUtc);
         }
     }
 }

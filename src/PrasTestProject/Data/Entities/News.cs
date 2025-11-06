@@ -8,6 +8,5 @@
 
         // Относительный путь к файлу в wwwroot
         public string? ImagePath { get; set; }
-        public bool IsPublished { get; set; } = true;
     }
 }
