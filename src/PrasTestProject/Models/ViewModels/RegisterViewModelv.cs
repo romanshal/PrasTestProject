@@ -4,18 +4,24 @@ namespace PrasTestProject.Models.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required]
-        public string Login {  get; set; } = string.Empty;
+        [Required(ErrorMessage = "LoginRequired")]
+        [Display(Name = "Login")]
+        public string Login { get; set; } = string.Empty;
 
-        [Required, EmailAddress]
+        [Required(ErrorMessage = "EmailRequired")]
+        [EmailAddress(ErrorMessage = "EmailInvalid")]
+        [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required, DataType(DataType.Password)]
+        [Required(ErrorMessage = "PasswordRequired")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "ConfirmPasswordRequired")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        [Display(Name = "ConfirmPassword")]
+        [Compare("Password", ErrorMessage = "PasswordsDoNotMatch")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
         public string ReturnUrl { get; set; } = "/";

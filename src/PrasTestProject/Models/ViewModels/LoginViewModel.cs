@@ -4,10 +4,17 @@ namespace PrasTestProject.Models.ViewModels
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(
+            ErrorMessage = "LoginRequired"
+        )]
+        [Display(Name = "Login")]
         public string Login { get; set; } = string.Empty;
 
-        [Required, DataType(DataType.Password)]
+        [Required(
+            ErrorMessage = "PasswordRequired"
+        )]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
 
         [Display(Name = "Remember me?")]
