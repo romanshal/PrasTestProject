@@ -43,7 +43,7 @@
 
   ## 🚀 Запуск проекта
 1. Клонируйте репозиторий:
-   git clone https://github.com/romanshal/PrasTestProject.git
-   cd PrasTestProject
+   - git clone https://github.com/romanshal/PrasTestProject.git
+   - cd PrasTestProject
 2. Запустите сервисы:
    docker-compose up -d
