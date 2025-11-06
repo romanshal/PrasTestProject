@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using PrasTestProject.Data.Contexts;
 using PrasTestProject.Data.Storages;
 using PrasTestProject.Extensions;
+using PrasTestProject.Factories;
+using PrasTestProject.Interfaces.Factories;
 using PrasTestProject.Interfaces.Storages;
 using PrasTestProject.Interfaces.UnitOfWork;
 using PrasTestProject.UnitOfWork;
@@ -28,9 +30,14 @@ builder.Services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
 builder.Services
     .AddScoped<ICreateNewsStorage, CreateNewsStorage>()
+    .AddScoped<IEditNewsStorage, EditNewsStorage>()
+    .AddScoped<IDeleteNewsStorage, DeleteNewsStorage>()
     .AddScoped<IImageStorage, LocalImageStorage>()
     .AddScoped<INewsDetailsStorage, NewsDetailsStorage>()
     .AddScoped<INewsListStorage, NewsListStorage>();
+
+builder.Services.AddSingleton<IFileNameFactory, FileNameFactory>();
+builder.Services.AddSingleton<IFilePathFactory, FilePathFactory>();
 
 builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>(opt =>
 {
@@ -64,8 +71,10 @@ var app = builder.Build();
 app.MigrateDatabase<NewsDbContext>((context, services) =>
 {
     var logger = services.GetService<ILogger<DataSeedMaker>>();
+    var roleManager = services.GetService<RoleManager<IdentityRole<Guid>>>();
+    var userManager = services.GetService<UserManager<IdentityUser<Guid>>>();
     DataSeedMaker
-        .SeedAsync(context, logger!)
+        .SeedAsync(context, logger!, roleManager!, userManager!)
         .Wait();
 });
 
@@ -73,10 +82,14 @@ var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOpt
 app.UseRequestLocalization(locOptions.Value);
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
     app.UseHsts();
 }
 

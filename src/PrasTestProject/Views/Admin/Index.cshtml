@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<NewsViewModel>
+@{
+    ViewData["Title"] = Localizer["Dashboard"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="container mt-4">
+    <h2 class="mb-4">@Localizer["Dashboard"]</h2>
+
+    <a asp-controller="Admin" asp-action="Create"class="btn btn-primary mb-3">
+        @Localizer["Create"]
+    </a>
+
+    <div id="news-list" class="row">
+        @await Html.PartialAsync("_AdminNewsListPartial", Model)
+    </div>
+
+    <!-- Подгрузка при скролле -->
+    <div id="loading" class="text-center my-4 d-none">
+        <span class="spinner-border"></span>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let page = 1;
+        let isLoading = false;
+        let hasMore = true; // флаг: есть ли ещё данные
+
+        window.addEventListener("scroll", async () => {
+            if (isLoading || !hasMore) return;
+
+           if (window.innerHeight + window.scrollY >= document.body.scrollHeight) {
+                isLoading = true;
+                document.getElementById("loading").classList.remove("d-none");
+
+                const response = await fetch(`/Admin/Page?page=${++page}`);
+                const html = await response.text();
+
+                if (html.trim().length === 0) {
+                    // сервер вернул пусто → новостей больше нет
+                    hasMore = false;
+                    document.getElementById("loading").classList.add("d-none");
+                    return;
+                }
+
+                document.getElementById("news-list").insertAdjacentHTML("beforeend", html);
+
+                document.getElementById("loading").classList.add("d-none");
+                isLoading = false;
+            }
+        });
+    </script>
+}

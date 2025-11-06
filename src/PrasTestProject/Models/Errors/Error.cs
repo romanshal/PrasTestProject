@@ -6,6 +6,7 @@
         public static Error NullValue = new(ErrorCodes.NullValue, "A null value was provided.");
         public static Error CantCreate(string message) => new(ErrorCodes.CantCreate, message);
         public static Error CantUpdate(string message) => new(ErrorCodes.CantUpdate, message);
+        public static Error CantDelete(string message) => new(ErrorCodes.CantDelete, message);
         public static Error NotFound(string message) => new(ErrorCodes.NotFound, message);
     }
 }

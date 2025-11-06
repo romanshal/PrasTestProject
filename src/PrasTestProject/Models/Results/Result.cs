@@ -1,4 +1,6 @@
-﻿using PrasTestProject.Models.Errors;
+﻿using Microsoft.AspNetCore.Mvc;
+using PrasTestProject.Models.Errors;
+using PrasTestProject.Models.ViewModels;
 using System.Text.Json.Serialization;
 
 namespace PrasTestProject.Models.Results

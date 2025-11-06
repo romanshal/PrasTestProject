@@ -9,9 +9,11 @@ namespace PrasTestProject.Mappings
     {
         public NewsProfile()
         {
-            CreateMap<News, NewsViewModel>();
+            CreateMap<News, NewsViewModel>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => "/" + src.ImagePath));
 
             CreateMap<News, NewsDetailsViewModel>()
+                .IncludeBase<News, NewsViewModel>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Body));
 
             CreateMap<CreateCommand, News>();

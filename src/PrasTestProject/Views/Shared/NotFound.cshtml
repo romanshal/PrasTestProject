@@ -1,0 +1,19 @@
+﻿@model ErrorViewModel
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<div class="container d-flex justify-content-center align-items-center min-vh-75">
+    <div class="card shadow-sm text-center w-100" style="max-width: 600px;">
+        <div class="card-body">
+            <h1 class="display-5 text-warning mb-3">@Localizer["Header"]</h1>
+
+            <p class="lead">@Model.Description</p>
+
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">
+                @Localizer["Back"]
+            </a>
+        </div>
+    </div>
+</div>

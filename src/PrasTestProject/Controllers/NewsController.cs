@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PrasTestProject.Features.News.Queries.GetDetails;
 using PrasTestProject.Features.News.Queries.GetList;
@@ -18,10 +17,6 @@ namespace PrasTestProject.Controllers
         {
             var result = await _mediator.Send(new GetListQuery(page, pageSize), cancellationToken);
 
-            ViewBag.Total = result.Value.total;
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-
             return View(result.Value.items);
         }
 
@@ -32,10 +27,6 @@ namespace PrasTestProject.Controllers
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new GetListQuery(page, pageSize), cancellationToken);
-
-            ViewBag.Total = result.Value.total;
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
 
             if (result.IsFailure)
             {

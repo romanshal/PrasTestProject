@@ -120,9 +120,6 @@
   <data name="Back" xml:space="preserve">
     <value>Back</value>
   </data>
-  <data name="CreateNews" xml:space="preserve">
-    <value>Create news</value>
-  </data>
   <data name="EditNews" xml:space="preserve">
     <value>Edit news</value>
   </data>

@@ -12,5 +12,16 @@ namespace PrasTestProject.Data.Storages
 
         public async Task<News?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
             await _context.News.FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
+
+        public async Task<News> HandleAsync(News news, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(news, nameof(news));
+
+            _context.News.Update(news);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return news;
+        }
     }
 }

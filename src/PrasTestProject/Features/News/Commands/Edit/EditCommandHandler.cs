@@ -25,12 +25,34 @@ namespace PrasTestProject.Features.News.Commands.Edit
                 return Result.Failure<Guid>(Error.NotFound("News not found."));
             }
 
+            var imagePath = await imageStorage.SaveAsync(request.Image, cancellationToken);
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                _logger.LogError("Error occurred while editing news.");
+                return Result.Failure<Guid>(Error.CantCreate("Error occurred while editing news."));
+            }
+
+            var oldImagePath = news.ImagePath;
+
             try
             {
+                news.Title = request.Title;
+                news.Subtitle = request.Subtitle;
+                news.Body = request.Body;
+                news.ImagePath = imagePath;
+
+                news = await newsStorage.HandleAsync(news, cancellationToken);
+
+                await imageStorage.DeleteAsync(oldImagePath);
+
+                await scope.Commit(cancellationToken);
+
                 return news.Id;
             }
             catch (Exception ex)
             {
+                await imageStorage.DeleteAsync(imagePath);
+
                 _logger.LogError("Error occurred while editing news: {message}", ex.Message);
 
                 return Result.Failure<Guid>(Error.CantUpdate("Error occurred while editing news."));

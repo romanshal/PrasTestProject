@@ -11,7 +11,7 @@ namespace PrasTestProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetListQuery(1, 3), cancellationToken);
+            var result = await _mediator.Send(new GetListQuery(1, 4), cancellationToken);
 
             return View(result.Value.items);
         }
